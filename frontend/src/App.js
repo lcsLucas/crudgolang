@@ -12,6 +12,7 @@ import { AuthProvider, Context } from './Context/AuthContext'
 
 import Header from './components/geral/HeaderContent'
 import Posts from './components/Posts'
+import Users from './components/Users'
 import Login from './components/Login'
 import Logout from './components/Logout'
 
@@ -100,7 +101,7 @@ function Routers() {
                         <Link className="nav-link" to="/posts">Posts</Link>
                     </li>
                     <li className="nav-item">
-                        <Link className="nav-link" to="/usuarios">Usuários</Link>
+                        <Link className="nav-link" to="/users">Usuários</Link>
                     </li>
                     {
                         authenticated &&
@@ -117,9 +118,9 @@ function Routers() {
                     <PrivateRoute path="/posts" >
                         <Posts />
                     </PrivateRoute>
-                    <Route path="/usuarios">
+                    <PrivateRoute path="/users" >
                         <Users />
-                    </Route>
+                    </PrivateRoute>
                     <CheckRoute path="/login">
                         <Login />
                     </CheckRoute>
@@ -142,16 +143,6 @@ function Home() {
                 <h3>Home</h3>
             </Header>
             {authenticated ? 'Logado' : 'Logout'}
-        </div>
-    )
-}
-
-function Users() {
-    return (
-        <div className="content">
-            <Header>
-                <h3>Usuários</h3>
-            </Header>
         </div>
     )
 }

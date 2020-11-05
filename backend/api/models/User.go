@@ -117,3 +117,29 @@ func (u *User) FindUserByID(db *gorm.DB, query_id uint32) (*User, error) {
 	}
 	return u, err
 }
+
+func (u *User) DeleteUser(db *gorm.DB, idUser uint64) (int64, error) {
+	db = db.Debug().Model(&User{}).Where("id = ?", idUser).Take(&User{}).Delete(&User{})
+	if db.Error != nil {
+		if gorm.IsRecordNotFoundError(db.Error) {
+			return 0, errors.New("Nenhum Usuário Encontrado")
+		}
+		return 0, db.Error
+	}
+
+	return db.RowsAffected, nil
+}
+
+func (u *User) UpdateUser(db *gorm.DB) (*User, error) {
+
+	tx := db.Begin()
+	err := tx.Debug().Save(&u).Error
+
+	if err != nil {
+		tx.Rollback()
+		return &User{}, err
+	}
+
+	tx.Commit()
+	return u, nil
+}

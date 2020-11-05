@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react'
+import $ from 'jquery';
 
 import { Context } from '../Context/AuthContext'
 
@@ -25,6 +26,11 @@ export default () => {
         setConteudo(post.conteudo)
         setPostEdit(post)
         setInitEditor(false)
+
+        $('html, body').animate({
+            scrollTop: 0
+        }, 800);
+
     }
 
     const getPosts = async () => {
