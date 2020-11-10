@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { Suspense, lazy, useContext } from 'react'
 import styled, { createGlobalStyle } from 'styled-components'
 import {
     BrowserRouter as Router,
@@ -11,10 +11,11 @@ import {
 import { AuthProvider, Context } from './Context/AuthContext'
 
 import Header from './components/geral/HeaderContent'
-import Posts from './components/Posts'
-import Users from './components/Users'
-import Login from './components/Login'
 import Logout from './components/Logout'
+
+const Posts = lazy(() => import("./components/Posts"))
+const Users = lazy(() => import("./components/Users"))
+const Login = lazy(() => import("./components/Login"))
 
 const GlobalStyle = createGlobalStyle`
     html {
@@ -91,45 +92,46 @@ function Routers() {
 
     return (
         <Router>
-            <GlobalStyle />
-            <div className="container">
-                <NavNavegation className="nav">
-                    <li className="nav-item">
-                        <Link className="nav-link" to="/">Home</Link>
-                    </li>
-                    <li className="nav-item">
-                        <Link className="nav-link" to="/posts">Posts</Link>
-                    </li>
-                    <li className="nav-item">
-                        <Link className="nav-link" to="/users">Usuários</Link>
-                    </li>
-                    {
-                        authenticated &&
+            <Suspense fallback={null}>
+                <GlobalStyle />
+                <div className="container">
+                    { authenticated && <NavNavegation className="nav">
                         <li className="nav-item">
-                            <Link className="nav-link" to="/logout">Logout</Link>
+                            <Link className="nav-link" to="/">Home</Link>
                         </li>
-                    }
-
-                </NavNavegation>
-                <Switch>
-                    <PrivateRoute exact path="/" >
-                        <Home />
-                    </PrivateRoute>
-                    <PrivateRoute path="/posts" >
-                        <Posts />
-                    </PrivateRoute>
-                    <PrivateRoute path="/users" >
-                        <Users />
-                    </PrivateRoute>
-                    <CheckRoute path="/login">
-                        <Login />
-                    </CheckRoute>
-                    <Route path="/logout">
-                        <Logout />
-                        <Redirect to="/login" />
-                    </Route>
-                </Switch>
-            </div>
+                        <li className="nav-item">
+                            <Link className="nav-link" to="/posts">Posts</Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link className="nav-link" to="/users">Usuários</Link>
+                        </li>
+                        {
+                            authenticated &&
+                            <li className="nav-item">
+                                <Link className="nav-link" to="/logout">Logout</Link>
+                            </li>
+                        }
+                    </NavNavegation>}
+                    <Switch>
+                        <PrivateRoute exact path="/" >
+                            <Home />
+                        </PrivateRoute>
+                        <PrivateRoute path="/posts" >
+                            <Posts />
+                        </PrivateRoute>
+                        <PrivateRoute path="/users" >
+                            <Users />
+                        </PrivateRoute>
+                        <CheckRoute path="/login">
+                            <Login />
+                        </CheckRoute>
+                        <Route path="/logout">
+                            <Logout />
+                            <Redirect to="/login" />
+                        </Route>
+                    </Switch>
+                </div>
+            </Suspense>
         </Router>
     )
 }
